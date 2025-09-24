@@ -12,6 +12,7 @@
 
 #define ADC_PIN 34
 
+// Voltage Divider Ratio
 #define DIVIDER_RATIO (5.6f / (5.6f + 2.2f)) // 2.2k / 5.6k (bottom / (top + bottom))
 
 
@@ -142,8 +143,7 @@ void do_fucking_everything_related_to_brake_bias()
     }
     else
     {
-        Serial.printf("Truncation happened while attempting to write to brake bias front's buffer. Check buffer size\n");
-        fflush(stdout);
+        Serial.println("Truncation happened while attempting to write to brake bias front's buffer. Check buffer size\n");
     }
 
     written = snprintf(
@@ -159,17 +159,15 @@ void do_fucking_everything_related_to_brake_bias()
     }
     else
     {
-        Serial.printf("Truncation happened while attempting to write to brake bias front's buffer. Check buffer size\n");
-        fflush(stdout);
+        Serial.println("Truncation happened while attempting to write to brake bias front's buffer. Check buffer size");
     } 
 
     return;
 }
 
-void hang()
+void hang_program()
 {
-    Serial.printf("Press ENTER to continue: ");
-    Serial.flush();
+    Serial.print("Press ENTER to continue: ");
 
     while (Serial.available())
         (void)Serial.read();
@@ -210,13 +208,13 @@ void setup()
             &timing_config,
             &filter_config) == ESP_OK)
     {
-        printf("Driver install OK\n");
+        Serial.println("Driver install OK");
     }
 
     else
     {
-		printf("Driver install error\n");
-        hang();
+		    Serial.println("Driver install error");
+        hang_program();
         exit(-1);
     }
 
@@ -252,12 +250,12 @@ void loop()
 
     if (twai_receive(&message, pdMS_TO_TICKS(10)) == ESP_OK)
     {
-        printf("Received a message\n");
+        Serial.println("Received a message");
         do_fucking_everything_except_brake_bias(message);
     }
     else
     {
-        printf("No messages recieved\n");
+        Serial.println("No messages recieved");
     }
 
     do_fucking_everything_related_to_brake_bias();
